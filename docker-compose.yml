@@ -1,11 +1,14 @@
 services:
-  banksoftwaredb:
+  postgres:
     image: postgres
 
   pgadmin:
     image: dpage/pgadmin4
 
-  banksoftware.api:
+  redis:
+    image: redis:latest
+
+  backend:
     image: ${DOCKER_REGISTRY-}banksoftwareapi
     build:
       context: .

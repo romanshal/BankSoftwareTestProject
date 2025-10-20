@@ -3,8 +3,8 @@ x-db-env: &db-env
   POSTGRES_PASSWORD: postgres
 
 services:
-  banksoftwaredb:
-    container_name: banksoftwaredb
+  postgres:
+    container_name: postgres
     environment:
       <<: *db-env
       POSTGRES_DB: banksoftware-db
@@ -31,15 +31,27 @@ services:
           cpus: '0.5'
           memory: 1G
 
-  banksoftware.api:
+  redis:
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+
+  backend:
+    container_name: backend 
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "https://+:443;http://+:80"
+      "ConnectionStrings:BankDbConnection": "Server=postgres;Port=5432;Database=banksoftware-db;User Id=postgres;Password=postgres;"
+      "Redis:Host": redis
+      "Redis:Port": 6379
+      "Redis:Password": redispassword
+      "Redis:ExpirationTimeSeconds": 300
     ports:
       - "8000:80"
       - "9000:443"
     depends_on:
-      - banksoftwaredb
+      - postgres
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
