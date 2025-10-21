@@ -14,6 +14,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/BankSoftware.API/BankSoftware.API.csproj", "src/BankSoftware.API/"]
 COPY ["src/BankSoftware.Application/BankSoftware.Application.csproj", "src/BankSoftware.Application/"]
+COPY ["src/BankSoftware.Domain/BankSoftware.Domain.csproj", "src/BankSoftware.Domain/"]
 COPY ["src/BankSoftware.Infrastructure/BankSoftware.Infrastructure.csproj", "src/BankSoftware.Infrastructure/"]
 RUN dotnet restore "./src/BankSoftware.API/BankSoftware.API.csproj"
 COPY . .

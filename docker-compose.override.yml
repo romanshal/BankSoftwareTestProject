@@ -2,6 +2,10 @@ x-db-env: &db-env
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
 
+networks:
+  appnet:
+    driver: bridge
+
 services:
   postgres:
     container_name: postgres
@@ -9,10 +13,17 @@ services:
       <<: *db-env
       POSTGRES_DB: banksoftware-db
     restart: always
+    # networks:
+    #   - appnet
     ports:
         - "5432:5432"
     volumes:
       - postgres_banksoftware:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     container_name: pgadmin
@@ -31,27 +42,43 @@ services:
           cpus: '0.5'
           memory: 1G
 
-  redis:
-    container_name: redis
-    restart: always
-    ports:
-      - '6379:6379'
-
   backend:
     container_name: backend 
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "https://+:443;http://+:80"
       "ConnectionStrings:BankDbConnection": "Server=postgres;Port=5432;Database=banksoftware-db;User Id=postgres;Password=postgres;"
-      "Redis:Host": redis
-      "Redis:Port": 6379
-      "Redis:Password": redispassword
-      "Redis:ExpirationTimeSeconds": 300
     ports:
       - "8000:80"
       - "9000:443"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    # networks:
+    #   - appnet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  frontend:
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    # networks:
+    #   - appnet
+    profiles:
+      - prod
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

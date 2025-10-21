@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   postgres:
     image: postgres
@@ -5,14 +7,18 @@ services:
   pgadmin:
     image: dpage/pgadmin4
 
-  redis:
-    image: redis:latest
-
   backend:
     image: ${DOCKER_REGISTRY-}banksoftwareapi
     build:
       context: .
       dockerfile: src/BankSoftware.API/Dockerfile
+
+  frontend:
+    build:
+      context: ./frontend/vue.client
+      dockerfile: Dockerfile
+      args:
+        VUE_APP_API_BASE_URL: "https://localhost:9000"
 
 volumes:
    postgres_banksoftware:

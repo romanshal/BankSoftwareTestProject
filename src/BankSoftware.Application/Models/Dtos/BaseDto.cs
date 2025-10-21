@@ -18,6 +18,6 @@
         /// <summary>
         /// Modified at.
         /// </summary>
-        public DateTimeOffset? ModifieddAt { get; set; }
+        public DateTimeOffset? ModifiedAt { get; set; }
     }
 }

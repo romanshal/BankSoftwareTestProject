@@ -21,15 +21,24 @@ namespace BankSoftware.Infrastructure.Repositories
         /// <param name="paging">Paging.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Paginated list of loans.</returns>
-        public async Task<IEnumerable<Loan>> GetAllAsync(
+        public async Task<(IEnumerable<Loan> loans, int total)> GetAllAsync(
             Paging paging,
-            CancellationToken cancellationToken = default) =>
-            await _context.Loans
+            CancellationToken cancellationToken = default)
+        {
+            var loans = await _context.Loans
                 .AsNoTracking()
                 .OrderByDescending(o => o.CreatedAt)
                 .Skip((paging.PageIndex - 1) * paging.PageSize)
                 .Take(paging.PageSize)
                 .ToListAsync(cancellationToken);
+
+            var total = await _context.Loans
+                .AsNoTracking()
+                .CountAsync(cancellationToken);
+
+            return (loans, total);
+        }
+
 
         /// <summary>
         /// Get loan by id.
@@ -39,8 +48,8 @@ namespace BankSoftware.Infrastructure.Repositories
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Loan entity or null</returns>
         public async Task<Loan?> GetAsync(
-            Guid id, 
-            bool tracking = true, 
+            Guid id,
+            bool tracking = true,
             CancellationToken cancellationToken = default)
         {
             var query = _context.Loans.AsQueryable();
@@ -58,10 +67,10 @@ namespace BankSoftware.Infrastructure.Repositories
         /// <param name="tracking">Is tracking entities.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Paginated list of loans.</returns>
-        public async Task<IEnumerable<Loan>> GetByFiltersAsync(
+        public async Task<(IEnumerable<Loan> loans, int total)> GetByFiltersAsync(
             LoanSearcFilter filter,
             Paging paging,
-            bool tracking = true, 
+            bool tracking = true,
             CancellationToken cancellationToken = default)
         {
             var query = _context.Loans.AsQueryable();
@@ -76,11 +85,15 @@ namespace BankSoftware.Infrastructure.Repositories
             if (filter.MinTerm.HasValue) query = query.Where(loan => loan.TermValue >= filter.MinTerm.Value);
             if (filter.MaxTerm.HasValue) query = query.Where(loan => loan.TermValue >= filter.MaxTerm.Value);
 
-            return await query
+            var loans = await query
                 .OrderByDescending(o => o.CreatedAt)
                 .Skip((paging.PageIndex - 1) * paging.PageSize)
                 .Take(paging.PageSize)
                 .ToListAsync(cancellationToken);
+
+            var total = await query.CountAsync(cancellationToken);
+
+            return (loans, total);
         }
 
         /// <summary>

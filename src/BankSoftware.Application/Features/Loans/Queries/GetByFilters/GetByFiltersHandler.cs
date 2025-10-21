@@ -26,7 +26,7 @@ namespace BankSoftware.Application.Features.Loans.Queries.GetByFilters
                 request.MinTerm,
                 request.MaxTerm);
 
-            var loans = await _loanRepository.GetByFiltersAsync(
+            var (loans, total) = await _loanRepository.GetByFiltersAsync(
                 filter: filter,
                 paging: paging,
                 tracking: false,
@@ -39,7 +39,7 @@ namespace BankSoftware.Application.Features.Loans.Queries.GetByFilters
 
             var loanDtos = _mapper.Map<IEnumerable<LoanDto>>(loans);
 
-            return PaginatedList<LoanDto>.Create(loanDtos, request.PageIndex, request.PageSize);
+            return PaginatedList<LoanDto>.Create(loanDtos, request.PageIndex, request.PageSize, total);
         }
     }
 }

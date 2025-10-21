@@ -8,7 +8,7 @@
         /// <summary>
         /// Status of loan.
         /// </summary>
-        public required string Status { get; set; }
+        public required bool Status { get; set; }
 
         /// <summary>
         /// Uniq number of loan.

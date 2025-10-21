@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BankSoftware.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/loans")]
+    [Route("api/loans")]
     public class LoanController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;

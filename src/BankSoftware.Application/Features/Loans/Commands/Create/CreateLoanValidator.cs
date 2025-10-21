@@ -7,9 +7,10 @@ namespace BankSoftware.Application.Features.Loans.Commands.Create
     {
         public CreateLoanValidator()
         {
+            RuleFor(x => x.Number).NotNull().NotEmpty().MinimumLength(1).MaximumLength(50);
             RuleFor(x => x.Amount).NotNull().NotEmpty().GreaterThan(0);
             RuleFor(x => x.TermValue).NotNull().NotEmpty().GreaterThan(0);
-            RuleFor(x => x.InterestValue).NotNull().NotEmpty().GreaterThan(0);
+            RuleFor(x => x.InterestValue).NotNull().NotEmpty().GreaterThan(0).LessThan(100);
         }
     }
 }

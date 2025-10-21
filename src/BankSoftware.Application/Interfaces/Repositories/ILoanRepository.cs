@@ -15,7 +15,7 @@ namespace BankSoftware.Application.Interfaces.Repositories
         /// <param name="paging">Paging.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Paginated list of loans.</returns>
-        Task<IEnumerable<Loan>> GetAllAsync(
+        Task<(IEnumerable<Loan> loans, int total)> GetAllAsync(
             Paging paging,
             CancellationToken cancellationToken = default);
 
@@ -36,7 +36,7 @@ namespace BankSoftware.Application.Interfaces.Repositories
         /// <param name="tracking">Is tracking entities.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Paginated list of loans.</returns>
-        Task<IEnumerable<Loan>> GetByFiltersAsync(
+        Task<(IEnumerable<Loan> loans, int total)> GetByFiltersAsync(
             LoanSearcFilter filter,
             Paging paging,
             bool tracking = true,
