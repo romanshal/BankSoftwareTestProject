@@ -1,11 +1,10 @@
-﻿using BankSoftware.Application.Features.Loans.Commands.ChangeStatus;
+﻿using BankSoftware.API.Extensions;
+using BankSoftware.Application.Features.Loans.Commands.ChangeStatus;
 using BankSoftware.Application.Features.Loans.Commands.Create;
 using BankSoftware.Application.Features.Loans.Queries.GetAll;
 using BankSoftware.Application.Features.Loans.Queries.GetByFilters;
 using BankSoftware.Application.Models;
 using BankSoftware.Application.Models.Dtos;
-using BankSoftware.Domain.Models;
-using BankSoftware.Domain.Models.SearchFilters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,12 +32,7 @@ namespace BankSoftware.API.Controllers
                 PageSize = pageSize 
             }, cancellationToken);
 
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error.Description);
-            }
-
-            return Ok(result.Value);
+            return this.MatchResponse(result);
         }
 
         [HttpGet("filter")]
@@ -67,12 +61,7 @@ namespace BankSoftware.API.Controllers
                 PageSize = pageSize,
             }, cancellationToken);
 
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error.Description);
-            }
-
-            return Ok(result.Value);
+            return this.MatchResponse(result);
         }
 
         [HttpPost]
@@ -86,12 +75,7 @@ namespace BankSoftware.API.Controllers
         {
             var result = await _mediator.Send(command, cancellationToken);
 
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error.Description);
-            }
-
-            return Ok();
+            return this.MatchResponse(result);
         }
 
         [HttpPut]
@@ -99,18 +83,13 @@ namespace BankSoftware.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangeStatus(
+        public async Task<IActionResult> ChangeStatusAsync(
             [FromBody] ChangeStatusCommand command,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(command, cancellationToken);
 
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error.Description);
-            }
-
-            return Ok();
+            return this.MatchResponse(result);
         }
     }
 }
