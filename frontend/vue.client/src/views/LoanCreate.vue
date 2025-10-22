@@ -40,11 +40,13 @@
 import { reactive, ref } from 'vue';
 import { createLoan } from '../services/api';
 import { useRouter } from 'vue-router';
+import { useToast } from 'primevue/usetoast';
 
 export default {
     name: 'LoanCreate',
     setup() {
         const router = useRouter();
+        const toast = useToast();
         const form = reactive({
             number: '',
             amount: null,
@@ -64,7 +66,9 @@ export default {
 
         async function onSubmit() {
             if (!validate()) return;
+
             submitting.value = true;
+
             try {
                 const payload = {
                     number: form.number,
@@ -72,11 +76,12 @@ export default {
                     termValue: form.termValue,
                     interestValue: form.interestValue
                 };
+
                 await createLoan(payload);
+
                 router.push({ path: '/' });
             } catch (err) {
-                console.error('Create loan failed', err);
-                // в реальном проекте показать уведомление
+                toast.add({ severity: 'error', summary: 'Error', detail: err?.message || 'Unknown error', life: 5000 });
             } finally {
                 submitting.value = false;
             }

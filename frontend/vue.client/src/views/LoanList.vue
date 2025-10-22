@@ -45,6 +45,7 @@ import { ref, onMounted } from 'vue';
 import { fetchLoans, toggleLoanPublish } from '../services/api';
 import LoanFilters from '../components/LoanFilters.vue';
 import Paginator from 'primevue/paginator';
+import { useToast } from 'primevue/usetoast';
 
 export default {
     name: 'LoanList',
@@ -57,6 +58,7 @@ export default {
         const totalCount = ref(0);
         const togglingId = ref(null);
         const loading = ref(false);
+        const toast = useToast();
 
         const filters = ref({
             status: null,
@@ -88,7 +90,7 @@ export default {
                 pageIndex.value = data.pageIndex || pageIndex.value;
                 pageSize.value = data.pageSize || pageSize.value;
             } catch (err) {
-                console.error('Failed to load loans', err);
+                toast.add({ severity: 'error', summary: 'Error', detail: err?.message || 'Unknown error', life: 5000 });
                 loans.value = [];
                 pagesCount.value = 1;
                 totalCount.value = 0;
@@ -128,7 +130,7 @@ export default {
                 await toggleLoanPublish(loan.id, !loan.status);
                 await load();
             } catch (err) {
-                console.error('Toggle publish failed', err);
+                toast.add({ severity: 'error', summary: 'Publish failed', detail: err?.message || 'Unknown error', life: 5000 });
             } finally {
                 togglingId.value = null;
             }

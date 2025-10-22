@@ -7,6 +7,8 @@
         <RouterLink to="/create" class="nav-link" active-class="active">Create loan</RouterLink>
       </nav>
     </header>
+    
+    <Toast />
 
     <main class="app-main">
       <RouterView v-slot="{ Component }">
@@ -23,8 +25,12 @@
 </template>
 
 <script>
+import Toast from 'primevue/toast';
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Toast
+  },
 }
 </script>
 
