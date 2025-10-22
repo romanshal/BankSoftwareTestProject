@@ -50,6 +50,7 @@
 
 1. Клонируйте репозиторий:
    git clone https://github.com/romanshal/BankSoftwareTestProject.git
+
    cd BankSoftwareTestProject
-2. Запустите сервисы:
+3. Запустите сервисы:
    docker-compose up -d
