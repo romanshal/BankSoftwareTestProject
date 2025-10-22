@@ -40,15 +40,16 @@ export default {
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 16px 20px;
   background: #f5f7fb;
   border-bottom: 1px solid #e6e9ef;
+  gap: 20px;
 }
 
 .title {
   margin: 0;
-  font-size: 18px;
+  font-size: 30px;
   font-weight: 600;
 }
 

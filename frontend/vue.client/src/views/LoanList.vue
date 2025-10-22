@@ -126,7 +126,7 @@ export default {
             try {
 
                 await toggleLoanPublish(loan.id, !loan.status);
-                loan.status = !loan.status;
+                await load();
             } catch (err) {
                 console.error('Toggle publish failed', err);
             } finally {
