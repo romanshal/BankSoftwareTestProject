@@ -49,7 +49,7 @@
 ## 🚀 Запуск проекта
 
 1. Клонируйте репозиторий:
-   git clone https://github.com/romanshal/AMTestProject.git
-   cd AMTestProject
+   git clone https://github.com/romanshal/BankSoftwareTestProject.git
+   cd BankSoftwareTestProject
 2. Запустите сервисы:
    docker-compose up -d
